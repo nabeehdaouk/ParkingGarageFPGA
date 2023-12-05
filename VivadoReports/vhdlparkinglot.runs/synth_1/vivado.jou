@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2018.3 (64-bit)
+# SW Build 2405991 on Thu Dec  6 23:36:41 MST 2018
+# IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
+# Start of session at: Thu May  4 20:05:34 2023
+# Process ID: 15072
+# Current directory: /home3/317/team10/vhdlparkinglot/vhdlparkinglot.runs/synth_1
+# Command line: vivado -log vhdlparkinglotblockdesign_wrapper.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source vhdlparkinglotblockdesign_wrapper.tcl
+# Log file: /home3/317/team10/vhdlparkinglot/vhdlparkinglot.runs/synth_1/vhdlparkinglotblockdesign_wrapper.vds
+# Journal file: /home3/317/team10/vhdlparkinglot/vhdlparkinglot.runs/synth_1/vivado.jou
+#-----------------------------------------------------------
+source vhdlparkinglotblockdesign_wrapper.tcl -notrace

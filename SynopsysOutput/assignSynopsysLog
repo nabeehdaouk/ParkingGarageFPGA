@@ -1,0 +1,658 @@
+Script started on Thu 04 May 2023 08:44:30 PM EDT
+# cd SYNOPSYS
+]0;hp05:/home3/317/team10/SYNOPSYS# source sy
+synopsys_setup.csh  synopsys_sim.setup* 
+# source synopsys_sn[Ketup.s[Kcsh
+.tshrc information: /home2/synopsys/synthesis is mounted
+.tshrc information: /home2/synopsys/vcs-mx/N-2017.12-SP2-11 is mounted
+# cat[K[K[Kls
+ALU-ALU_ARCH.syn
+ALU.mr
+ALU.syn
+ARCH
+Assignment3
+Assignment4
+Assignment5
+clean
+ClockDivider_tb.v
+ClockDivider.v
+COKEMACHINEFSM.mr
+CokeMachineFSM_tb.v
+CokeMachineFSM.v
+CokeMachineFSM-verilog.pvl
+CokeMachineFSM-verilog.syn
+CokeMachineSynthesisOutput.v
+command.log
+compile
+CONV_PACK_N_BIT_ALU.syn
+core.21919
+core.22356
+csrc
+default.svf
+DVEfiles
+ENTI
+file5.vhd
+file.vhd
+FULL_ADDER_0.mr
+FULL_ADDER_0.syn
+FULL_ADDER_0-SYN_FULL_ADDER_ARCH.syn
+FULL_ADDER_1.mr
+FULL_ADDER_1.syn
+FULL_ADDER_1-SYN_FULL_ADDER_ARCH.syn
+FULL_ADDER_2.mr
+FULL_ADDER_2.syn
+FULL_ADDER_2-SYN_FULL_ADDER_ARCH.syn
+FULL_ADDER_3.mr
+FULL_ADDER_3.syn
+FULL_ADDER_3-SYN_FULL_ADDER_ARCH.syn
+FULL_ADDER_4.mr
+FULL_ADDER_4.syn
+FULL_ADDER_4-SYN_FULL_ADDER_ARCH.syn
+FULL_ADDER_5.mr
+FULL_ADDER_5.syn
+FULL_ADDER_5-SYN_FULL_ADDER_ARCH.syn
+FULL_ADDER_6.mr
+FULL_ADDER_6.syn
+FULL_ADDER_6-SYN_FULL_ADDER_ARCH.syn
+FULL_ADDER_7.mr
+FULL_ADDER_7.syn
+FULL_ADDER_7-SYN_FULL_ADDER_ARCH.syn
+FULL_ADDER-FULL_ADDER_ARCH.syn
+FULL_ADDER.mr
+FULL_ADDER.syn
+FullAdder.vhd
+FULL_SUBTRACTOR_0.mr
+FULL_SUBTRACTOR_0.syn
+FULL_SUBTRACTOR_0-SYN_FULL_SUBTRACTOR_ARCH.syn
+FULL_SUBTRACTOR_1.mr
+FULL_SUBTRACTOR_1.syn
+FULL_SUBTRACTOR_1-SYN_FULL_SUBTRACTOR_ARCH.syn
+FULL_SUBTRACTOR_2.mr
+FULL_SUBTRACTOR_2.syn
+FULL_SUBTRACTOR_2-SYN_FULL_SUBTRACTOR_ARCH.syn
+FULL_SUBTRACTOR_3.mr
+FULL_SUBTRACTOR_3.syn
+FULL_SUBTRACTOR_3-SYN_FULL_SUBTRACTOR_ARCH.syn
+FULL_SUBTRACTOR_4.mr
+FULL_SUBTRACTOR_4.syn
+FULL_SUBTRACTOR_4-SYN_FULL_SUBTRACTOR_ARCH.syn
+FULL_SUBTRACTOR_5.mr
+FULL_SUBTRACTOR_5.syn
+FULL_SUBTRACTOR_5-SYN_FULL_SUBTRACTOR_ARCH.syn
+FULL_SUBTRACTOR_6.mr
+FULL_SUBTRACTOR_6.syn
+FULL_SUBTRACTOR_6-SYN_FULL_SUBTRACTOR_ARCH.syn
+FULL_SUBTRACTOR_7.mr
+FULL_SUBTRACTOR_7.syn
+FULL_SUBTRACTOR_7-SYN_FULL_SUBTRACTOR_ARCH.syn
+FULL_SUBTRACTOR-FULL_SUBTRACTOR_ARCH.syn
+FULL_SUBTRACTOR.mr
+FULL_SUBTRACTOR.syn
+FullSubtractor.vhd
+inter.vpd
+jpg
+lab1_synthesis
+lib
+makeSim.tcl
+metercore.vhd
+N_BIT_ADDER.mr
+N_BIT_ADDER-N_BIT_ADDER_ARCH.syn
+N_BIT_ADDER.syn
+N_BIT_ADDER-SYN_N_BIT_ADDER_ARCH.syn
+N_bit_adder.vhd
+N_BIT_ALU.mr
+N_BIT_ALU-N_BIT_ALU_ARCH.syn
+N_BIT_ALU.syn
+N_BIT_ALU-SYN_N_BIT_ALU_ARCH.syn
+N_bit_alu.vhd
+N_bit_alu.vhd~
+N_BIT_SUBTRACTOR.mr
+N_BIT_SUBTRACTOR-N_BIT_SUBTRACTOR_ARCH.syn
+N_BIT_SUBTRACTOR.syn
+N_BIT_SUBTRACTOR-SYN_N_BIT_SUBTRACTOR_ARCH.syn
+N_bit_subtractor.vhd
+PACK
+package.vhd
+PARKINGFSM.mr
+ParkingFSM.v
+ParkingFSM-verilog.pvl
+ParkingFSM-verilog.syn
+parkinglotvhdl.vhd
+quickStart.html
+quickStart.tcl
+rgb_module_tb.v
+rgb_module.v
+simv
+simv.daidir
+stack.info.21561
+stack.info.22356
+stack.info.23949
+start_over
+synopsys_setup.csh
+synopsys_sim.setup
+tb.vhd
+typescript
+ucli.key
+watch.v
+WORK
+# cat parkinglotvhdl.vhd
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use ieee.numeric_std.all;
+
+entity ParkingFSM is
+	port (
+    	Sense_In, Sense_Out, Override, Start, Stop, clk : in std_logic;
+    	Open_1, Full, Closed : out std_logic
+	);
+end ParkingFSM;
+
+architecture Behavioral of ParkingFSM is
+	-- State encodings
+	type state_type is (sOpen, sFull, sClose, sOverride);
+	signal NXT_ST, PRES_ST : state_type;
+	signal count : unsigned(4 downto 0) := "00000";
+begin
+	-- procedure for incrementing and decrementing
+	count_process: process (Sense_In, Sense_Out, Start)
+	begin
+	
+	if Start = '1' then
+        count <= "00000";
+    end if;
+	
+    	case PRES_ST is
+        	when sOpen =>
+            	if rising_edge(Sense_Out) and count > 0 then
+                	count <= count - 1;
+                end if;
+            	if rising_edge(Sense_In) and count < 20 then
+                	count <= count + 1;
+            	end if;
+        	when sFull =>
+            	if rising_edge(Sense_Out) and count > 0 then
+                	count <= count - 1;
+            	end if;
+            when others =>
+                null;
+    	end case;
+	end process count_process;
+
+	-- Output LEDS
+	Open_1 <= '1' when PRES_ST = sOpen else '0';
+	Full <= '1' when PRES_ST = sFull else '0';
+	Closed <= '1' when PRES_ST = sClose else '0';
+
+	-- Update current state
+	state_process: process (clk)
+    begin
+    
+    PRES_ST <= NXT_ST;
+    
+    if rising_edge(clk) then
+        if Start = '1' then
+            NXT_ST <= sOpen;
+        else
+            case PRES_ST is
+                when sOpen =>
+                    if count >= 20 then
+                        NXT_ST <= sFull;
+                    elsif Override = '1' then
+                        NXT_ST <= sOverride;
+                    elsif Stop = '1' then
+                        NXT_ST <= sClose;
+                    else
+                        NXT_ST <= sOpen;
+                    end if;
+                when sFull =>
+                    if count < 20 then
+                        NXT_ST <= sOpen;
+                    elsif Override = '1' then
+                        NXT_ST <= sOverride;
+                    elsif Stop = '1' then
+                        NXT_ST <= sClose;
+                    else
+                        NXT_ST <= sFull;
+                    end if;
+                when sClose =>
+                    if Start = '1' then
+                        NXT_ST <= sOpen;
+                    else
+                        NXT_ST <= sClose;
+                    end if;
+                when sOverride =>
+                    if Override = '1' then
+                        null; -- do nothing
+                    elsif Stop = '1' then
+                        NXT_ST <= sClose;
+                    elsif count >= 20 then
+                        NXT_ST <= sFull;
+                    elsif count < 20 then
+                        NXT_ST <= sOpen;
+                    else
+                        NXT_ST <= sOverride;
+                    end if;
+                when others =>
+                    null; -- do nothing
+            end case;
+        end if;
+    end if;
+end process state_process;
+
+
+end Behavioral;
+# analyze -format vhdl -library WORK parkinglotvhdl.vhd
+analyze: Command not found.
+# dc_shell -t
+
+                      Design Compiler Graphical
+                            DC Ultra (TM)
+                             DFTMAX (TM)
+                         Power Compiler (TM)
+                           DesignWare (R)
+                           DC Expert (TM)
+                         Design Vision (TM)
+                          HDL Compiler (TM)
+                         VHDL Compiler (TM)
+                            DFT Compiler
+                        Library Compiler (TM)
+                         Design Compiler(R)
+
+          Version H-2013.03-SP5 for RHEL64 -- Oct 18, 2013
+               Copyright (c) 1988-2013 Synopsys, Inc.
+
+This software and the associated documentation are confidential and 
+proprietary to Synopsys, Inc. Your use or disclosure of this software 
+is subject to the terms and conditions of a written license agreement 
+between you, or your company, and Synopsys, Inc.
+
+Initializing...
+Information: script '/home3/317/team10/SYNOPSYS/.synopsys_dc.setup'
+	stopped at line 10 due to EOF. (CMD-081)
+dc_shell> analyze -format vhdl -library WORK parkinglotvhdl.vhd
+Running PRESTO HDLC
+Compiling Entity Declaration PARKINGFSM
+Compiling Architecture BEHAVIORAL of PARKINGFSM
+Warning:  The entity 'ParkingFSM' has multiple architectures defined. The last defined architecture 'Behavioral' will be used to build the design by default. (VHD-6)
+Presto compilation completed successfully.
+Loading db file '/home2/synopsys/synthesis/libraries/syn/class.db'
+1
+dc_shell> elaboria[K[Kate parkingFSM[K[K[K[K[K[K[K[K[K[KParjub[K[K[Kking FSM -arch Behavioral -lib WORK -update
+Loading db file '/home2/synopsys/synthesis/libraries/syn/gtech.db'
+Loading db file '/home2/synopsys/synthesis/libraries/syn/standard.sldb'
+  Loading link library 'class'
+  Loading link library 'gtech'
+Running PRESTO HDLC
+Warning:  ./parkinglotvhdl.vhd:16: The initial value for signal 'count' is not supported for synthesis. Presto ignores it.  (ELAB-130)
+Error:  ./parkinglotvhdl.vhd:31: Processes containing more than one 'if' statement that tests an event expression are not supported. (ELAB-413)
+Error:  ./parkinglotvhdl.vhd:35: Processes containing more than one 'if' statement that tests an event expression are not supported. (ELAB-413)
+Warning:  ./parkinglotvhdl.vhd:58: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+*** Presto compilation terminated with 2 errors. ***
+0
+dc_shell> elaborate ParkingFSM -arch Behavioral -lib WORK -update[11Ganalyze -format vhdl -library WORK parkinglotvhdl.vhd[K[11Gelaborate ParkingFSM -arch Behavioral -lib WORK -update[11G[Kelaborate ParkingFSM -arch Behavioral -lib WORK -update[11Ganalyze -format vhdl -library WORK parkinglotvhdl.vhd[K[K[K[K[K[K[K[K[K[K[K[KFSM[K[K[K[K[K[K[K[K[K[KParkingFSM2.v
+Running PRESTO HDLC
+Error:  Unable to open file `ParkingFSM2.v': in search_path {. ./WORK /home2/synopsys/synthesis/libraries/syn}. (VER-41)
+*** Presto compilation terminated with 1 errors. ***
+0
+dc_shell> analyze -format vhdl -library WORK ParkingFSM2.v[P [P [P [1@e [1@r [1@i [1@l [1@o [1@g 
+Running PRESTO HDLC
+Searching for ./ParkingFSM2.v
+Searching for ./WORK/ParkingFSM2.v
+Searching for /home2/synopsys/synthesis/libraries/syn/ParkingFSM2.v
+Error:  Unable to open file `ParkingFSM2.v': in search_path {. ./WORK /home2/synopsys/synthesis/libraries/syn}. (VER-41)
+*** Presto compilation terminated with 1 errors. ***
+0
+dc_shell> analyze -format verilog -library WORK ParkingFSM2.v
+Running PRESTO HDLC
+Searching for ./ParkingFSM2.v
+Compiling source file ./ParkingFSM2.v
+Error:  ./ParkingFSM2.v:15: Variable 'NXT_ST' is the target of both blocking and nonblocking assignments in the same always block. (VER-134)
+*** Presto compilation terminated with 1 errors. ***
+0
+dc_shell> analyze -format verilog -library WORK ParkingFSM2.v
+Running PRESTO HDLC
+Searching for ./ParkingFSM2.v
+Compiling source file ./ParkingFSM2.v
+Presto compilation completed successfully.
+1
+dc_shell> analyze -format verilog -library WORK ParkingFSM2.v[28G[3Phdl[59G[11Gelaborate ParkingFSM -arch Behavioral -lib WORK -update -arch Behavioral[P [P [P [P [P [P [P [P [P [P [P-[P [P [P [P [P [P-
+Running PRESTO HDLC
+Warning:  ./ParkingFSM2.v:16: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+
+Statistics for case statements in always block at line 15 in file
+	'./ParkingFSM2.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            16            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine ParkingFSM line 15 in file
+		'./ParkingFSM2.v'.
+===========================================================================
+|    Register Name    | Type  | Width | Bus | MB | AR | AS | SR | SS | ST |
+===========================================================================
+|     PRES_ST_reg     | Latch |   2   |  Y  | N  | N  | N  | -  | -  | -  |
+===========================================================================
+Presto compilation completed successfully.
+Elaborated 1 design.
+Current design is now 'ParkingFSM'.
+1
+dc_shell> elaborate ParkingFSM -lib WORK -update[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Klist _designs
+ParkingFSM (*)
+1
+dc_shell> uniquify
+1
+dc_shell> compile
+Information: Evaluating DesignWare library utilization. (UISN-27)
+
+============================================================================
+| DesignWare Building Block Library  |         Version         | Available |
+============================================================================
+| Basic DW Building Blocks           | H-2013.03-DWBB_201303.5 |     *     |
+| Licensed DW Building Blocks        |                         |           |
+============================================================================
+
+
+Information: There are 5 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
+
+
+
+  Beginning Pass 1 Mapping
+  ------------------------
+  Processing 'ParkingFSM'
+Information: The register 'PRES_ST_reg[1]' is a constant and will be removed. (OPT-1206)
+Information: The register 'PRES_ST_reg[0]' is a constant and will be removed. (OPT-1206)
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+Information: Design 'ParkingFSM' has no optimization constraints set. (OPT-108)
+
+  Beginning Mapping Optimizations  (Medium effort)
+  -------------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+
+
+
+  Beginning Delay Optimization Phase
+  ----------------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+
+
+  Beginning Area-Recovery Phase  (cleanup)
+  -----------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+    0:00:00       0.0      0.00       0.0       0.0                          
+Loading db file '/home2/synopsys/synthesis/libraries/syn/class.db'
+
+  Optimization Complete
+  ---------------------
+1
+dc_shell> report_cell
+Information: Updating graph... (UID-83)
+ 
+****************************************
+Report : cell
+Design : ParkingFSM
+Version: H-2013.03-SP5
+Date   : Thu May  4 20:57:22 2023
+****************************************
+
+Attributes:
+    b - black box (unknown)
+    h - hierarchical
+    n - noncombinational
+    r - removable
+    u - contains unmapped logic
+
+Cell                      Reference       Library             Area  Attributes
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+Total 0 cells                                             0.000000
+1
+dc_shell> write -h -f vh[Kerilog -synthesisoutputlab1.v
+Error: unknown option '-synthesisoutputlab1.v' (CMD-010)
+dc_shell> write -h -f verilog -synthesisoutputlab1.v-[1@-s[1@o-[1@u-[1@t-[1@p-[1@u-[1@t-[1@ -
+Writing verilog file '/home3/317/team10/SYNOPSYS/-synthesisoutputlab1.v'.
+Warning: Verilog 'assign' or 'tran' statements are written out. (VO-4)
+1
+dc_shell> quit[K[K[K[Kdesign_vision&
+Error: unknown command 'design_vision&' (CMD-005)
+dc_shell> quit
+
+Thank you...
+# design_vision&
+[1] 20161
+# 
+                      Design Compiler Graphical
+                            DC Ultra (TM)
+                             DFTMAX (TM)
+                         Power Compiler (TM)
+                           DesignWare (R)
+                           DC Expert (TM)
+                         Design Vision (TM)
+                          HDL Compiler (TM)
+                         VHDL Compiler (TM)
+                            DFT Compiler
+                        Library Compiler (TM)
+                         Design Compiler(R)
+
+          Version H-2013.03-SP5 for RHEL64 -- Oct 18, 2013
+               Copyright (c) 1988-2013 Synopsys, Inc.
+
+This software and the associated documentation are confidential and 
+proprietary to Synopsys, Inc. Your use or disclosure of this software 
+is subject to the terms and conditions of a written license agreement 
+between you, or your company, and Synopsys, Inc.
+
+Initializing...
+Information: script '/home3/317/team10/SYNOPSYS/.synopsys_dc.setup'
+	stopped at line 10 due to EOF. (CMD-081)
+design_vision> design_vision> read_file -format verilog {/home3/317/team10/SYNOPSYS/ParkingFSM2.v}
+Loading db file '/home2/synopsys/synthesis/libraries/syn/class.db'
+Loading db file '/home2/synopsys/synthesis/libraries/syn/gtech.db'
+Loading db file '/home2/synopsys/synthesis/libraries/syn/standard.sldb'
+  Loading link library 'class'
+  Loading link library 'gtech'
+Loading verilog file '/home3/317/team10/SYNOPSYS/ParkingFSM2.v'
+Detecting input file type automatically (-rtl or -netlist).
+Reading with Presto HDL Compiler (equivalent to -rtl option).
+Running PRESTO HDLC
+Compiling source file /home3/317/team10/SYNOPSYS/ParkingFSM2.v
+Warning:  /home3/317/team10/SYNOPSYS/ParkingFSM2.v:16: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+
+Statistics for case statements in always block at line 15 in file
+	'/home3/317/team10/SYNOPSYS/ParkingFSM2.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            16            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine ParkingFSM line 15 in file
+		'/home3/317/team10/SYNOPSYS/ParkingFSM2.v'.
+===========================================================================
+|    Register Name    | Type  | Width | Bus | MB | AR | AS | SR | SS | ST |
+===========================================================================
+|     PRES_ST_reg     | Latch |   2   |  Y  | N  | N  | N  | -  | -  | -  |
+===========================================================================
+Presto compilation completed successfully.
+Current design is now '/home3/317/team10/SYNOPSYS/ParkingFSM.db:ParkingFSM'
+Loaded 1 design.
+Current design is 'ParkingFSM'.
+design_vision> Current design is 'ParkingFSM'.
+Loading db file '/home2/synopsys/synthesis/libraries/syn/class.sdb'
+Loading db file '/home2/synopsys/synthesis/libraries/syn/generic.sdb'
+read_file -format verilog {/home3/317/team10/SYNOPSYS/ParkingFSM.v}
+Loading verilog file '/home3/317/team10/SYNOPSYS/ParkingFSM.v'
+Detecting input file type automatically (-rtl or -netlist).
+Warning: Overwriting design file '/home3/317/team10/SYNOPSYS/ParkingFSM'. (DDB-24)
+Reading with Presto HDL Compiler (equivalent to -rtl option).
+Running PRESTO HDLC
+Compiling source file /home3/317/team10/SYNOPSYS/ParkingFSM.v
+Warning:  /home3/317/team10/SYNOPSYS/ParkingFSM.v:16: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+
+Statistics for case statements in always block at line 15 in file
+	'/home3/317/team10/SYNOPSYS/ParkingFSM.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            16            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine ParkingFSM line 15 in file
+		'/home3/317/team10/SYNOPSYS/ParkingFSM.v'.
+===========================================================================
+|    Register Name    | Type  | Width | Bus | MB | AR | AS | SR | SS | ST |
+===========================================================================
+|     NXT_ST_reg      | Latch |   2   |  Y  | N  | N  | N  | -  | -  | -  |
+|      count_reg      | Latch |   5   |  Y  | N  | N  | N  | -  | -  | -  |
+===========================================================================
+
+Inferred memory devices in process
+	in routine ParkingFSM line 62 in file
+		'/home3/317/team10/SYNOPSYS/ParkingFSM.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|     Closed_reg      | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+|     Open_1_reg      | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+|      Full_reg       | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine ParkingFSM line 70 in file
+		'/home3/317/team10/SYNOPSYS/ParkingFSM.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|     NXT_ST_reg2     | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|     PRES_ST_reg     | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|     count_reg2      | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Error:  /home3/317/team10/SYNOPSYS/ParkingFSM.v:15: Net 'count[4]' or a directly connected net is driven by more than one source, and not all drivers are three-state. (ELAB-366)
+Error:  /home3/317/team10/SYNOPSYS/ParkingFSM.v:15: Net 'count[3]' or a directly connected net is driven by more than one source, and not all drivers are three-state. (ELAB-366)
+Error:  /home3/317/team10/SYNOPSYS/ParkingFSM.v:15: Net 'count[2]' or a directly connected net is driven by more than one source, and not all drivers are three-state. (ELAB-366)
+Error:  /home3/317/team10/SYNOPSYS/ParkingFSM.v:15: Net 'count[1]' or a directly connected net is driven by more than one source, and not all drivers are three-state. (ELAB-366)
+Error:  /home3/317/team10/SYNOPSYS/ParkingFSM.v:15: Net 'count[0]' or a directly connected net is driven by more than one source, and not all drivers are three-state. (ELAB-366)
+Error:  /home3/317/team10/SYNOPSYS/ParkingFSM.v:15: Net 'NXT_ST[1]' or a directly connected net is driven by more than one source, and not all drivers are three-state. (ELAB-366)
+Error:  /home3/317/team10/SYNOPSYS/ParkingFSM.v:15: Net 'NXT_ST[0]' or a directly connected net is driven by more than one source, and not all drivers are three-state. (ELAB-366)
+*** Presto compilation terminated with 7 errors. ***
+Error: Can't read 'verilog' file '/home3/317/team10/SYNOPSYS/ParkingFSM.v'. (UID-59)
+No designs were read
+design_vision> read_file -format verilog {/home3/317/team10/SYNOPSYS/ParkingFSM2.v}
+Loading verilog file '/home3/317/team10/SYNOPSYS/ParkingFSM2.v'
+Detecting input file type automatically (-rtl or -netlist).
+Reading with Presto HDL Compiler (equivalent to -rtl option).
+Running PRESTO HDLC
+Compiling source file /home3/317/team10/SYNOPSYS/ParkingFSM2.v
+Warning:  /home3/317/team10/SYNOPSYS/ParkingFSM2.v:16: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+
+Statistics for case statements in always block at line 15 in file
+	'/home3/317/team10/SYNOPSYS/ParkingFSM2.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            16            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine ParkingFSM line 15 in file
+		'/home3/317/team10/SYNOPSYS/ParkingFSM2.v'.
+===========================================================================
+|    Register Name    | Type  | Width | Bus | MB | AR | AS | SR | SS | ST |
+===========================================================================
+|     PRES_ST_reg     | Latch |   2   |  Y  | N  | N  | N  | -  | -  | -  |
+===========================================================================
+Presto compilation completed successfully.
+Current design is now '/home3/317/team10/SYNOPSYS/ParkingFSM.db:ParkingFSM'
+Loaded 1 design.
+Current design is 'ParkingFSM'.
+design_vision> Current design is 'ParkingFSM'.
+read_file -format verilog {/home3/317/team10/SYNOPSYS/-synthesisoutputlab1.v}
+Loading verilog file '/home3/317/team10/SYNOPSYS/-synthesisoutputlab1.v'
+Detecting input file type automatically (-rtl or -netlist).
+Warning: Overwriting design file '/home3/317/team10/SYNOPSYS/ParkingFSM'. (DDB-24)
+Running DC verilog reader
+Performing 'read' command.
+Compiling source file /home3/317/team10/SYNOPSYS/-synthesisoutputlab1.v
+Reading with netlist reader (equivalent to -netlist option).
+Verilog netlist reader completed successfully.
+Current design is now '/home3/317/team10/SYNOPSYS/ParkingFSM.db:ParkingFSM'
+Loaded 1 design.
+Current design is 'ParkingFSM'.
+design_vision> Current design is 'ParkingFSM'.
+read_file -format verilog {/home3/317/team10/SYNOPSYS/ParkingFSM2.v}
+Loading verilog file '/home3/317/team10/SYNOPSYS/ParkingFSM2.v'
+Detecting input file type automatically (-rtl or -netlist).
+Warning: Overwriting design file '/home3/317/team10/SYNOPSYS/ParkingFSM'. (DDB-24)
+Reading with Presto HDL Compiler (equivalent to -rtl option).
+Running PRESTO HDLC
+Compiling source file /home3/317/team10/SYNOPSYS/ParkingFSM2.v
+Warning:  /home3/317/team10/SYNOPSYS/ParkingFSM2.v:16: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+
+Statistics for case statements in always block at line 15 in file
+	'/home3/317/team10/SYNOPSYS/ParkingFSM2.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            16            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine ParkingFSM line 15 in file
+		'/home3/317/team10/SYNOPSYS/ParkingFSM2.v'.
+===========================================================================
+|    Register Name    | Type  | Width | Bus | MB | AR | AS | SR | SS | ST |
+===========================================================================
+|     PRES_ST_reg     | Latch |   2   |  Y  | N  | N  | N  | -  | -  | -  |
+===========================================================================
+Presto compilation completed successfully.
+Current design is now '/home3/317/team10/SYNOPSYS/ParkingFSM.db:ParkingFSM'
+Loaded 1 design.
+Current design is 'ParkingFSM'.
+design_vision> Current design is 'ParkingFSM'.
+c[K# cd [K[Kexit
+exit
+
+Script done on Thu 04 May 2023 09:07:40 PM EDT
